@@ -1,6 +1,7 @@
 export type { Catalog, Category, Product, ProductInput } from "./types";
 export {
   MAX_FEATURED,
+  catalogStore,
   countFeatured,
   createCategory,
   createProduct,

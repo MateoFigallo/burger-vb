@@ -1,15 +1,22 @@
 export type {
   Customer,
   CustomerAccount,
+  CustomerCreditMovement,
   CustomerInput,
   CustomerSegment,
   SegmentOptions,
 } from "./types";
 export {
   createCustomer,
+  customerCreditStore,
+  customersStore,
   deleteCustomer,
   findCustomer,
   findCustomerByUsername,
+  getCustomerCreditLimit,
+  getCustomerDebt,
+  recordCustomerCreditCharge,
+  recordCustomerCreditPayment,
   recordDeliveredOrder,
   redeemStamps,
   setCustomerAccount,
@@ -27,4 +34,4 @@ export {
   isInactive,
   matchesSegment,
 } from "./services/segments";
-export { useCustomers } from "./hooks/use-customers";
+export { useCustomerCreditMovements, useCustomers } from "./hooks/use-customers";

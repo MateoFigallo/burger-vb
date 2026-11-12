@@ -1,5 +1,6 @@
 import { daysSince, isBirthdayThisMonth } from "@/lib/dates";
 import type { Customer, CustomerSegment, SegmentOptions } from "../types";
+import { getCustomerDebt } from "./customers-store";
 
 export const SEGMENT_LABELS: Record<CustomerSegment, string> = {
   todos: "Todos los clientes",
@@ -7,6 +8,7 @@ export const SEGMENT_LABELS: Record<CustomerSegment, string> = {
   inactivos: "Inactivos",
   canje: "Pueden canjear un premio",
   nuevos: "Nuevos (últimos 30 días)",
+  con_deuda: "Con saldo en Fiado / Cta. Cte.",
 };
 
 export const SEGMENTS = Object.keys(SEGMENT_LABELS) as CustomerSegment[];
@@ -44,6 +46,8 @@ export function matchesSegment(
       return customer.stamps >= options.stampsRequired;
     case "nuevos":
       return daysSince(customer.createdAt, options.now) <= 30;
+    case "con_deuda":
+      return getCustomerDebt(customer.id) > 0;
   }
 }
 

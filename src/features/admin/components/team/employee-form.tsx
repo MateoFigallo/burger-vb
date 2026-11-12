@@ -14,9 +14,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { businessConfig } from "@/config/business.config";
 import type { ModuleId } from "@/config/panel";
 import { useUsernameAvailability } from "@/features/auth";
-import { createEmployee, updateEmployee, type Employee, type Role } from "@/features/team";
+import {
+  createEmployee,
+  updateEmployee,
+  type Employee,
+  type Role,
+  type ShiftId,
+} from "@/features/team";
 import {
   AccountFields,
   validateAccount,
@@ -42,6 +49,9 @@ export function EmployeeForm({ employee, roles, onDone }: EmployeeFormProps) {
     employee?.modules ?? initialRole?.modules ?? [],
   );
   const [active, setActive] = useState(employee?.active ?? true);
+  const [pinCode, setPinCode] = useState(employee?.pinCode ?? "1234");
+  const [shiftId, setShiftId] = useState<ShiftId>(employee?.shiftId ?? "noche");
+  const [hourlyRate, setHourlyRate] = useState(String(employee?.hourlyRate ?? 4500));
   const [account, setAccount] = useState<AccountDraft>({
     username: employee?.username ?? "",
     password: "",
@@ -84,7 +94,17 @@ export function EmployeeForm({ employee, roles, onDone }: EmployeeFormProps) {
     }
 
     setSaving(true);
-    const input = { name, phone, roleId, modules, active, username: account.username };
+    const input = {
+      name,
+      phone,
+      roleId,
+      modules,
+      active,
+      username: account.username,
+      pinCode: pinCode.trim() || "0000",
+      shiftId,
+      hourlyRate: Math.max(0, Number(hourlyRate) || 0),
+    };
     if (employee) {
       await updateEmployee(employee.id, input, account.password);
       toast.success(`Guardaste los datos de ${name.trim()}`);
@@ -153,6 +173,48 @@ export function EmployeeForm({ employee, roles, onDone }: EmployeeFormProps) {
           <p className="text-muted-foreground text-xs">
             Al elegir el rol se marcan sus módulos. Después podés ajustarlos.
           </p>
+        </div>
+
+        <div className="grid gap-4 rounded-2xl border p-4 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="employee-pin">PIN de fichaje (4 dígitos)</Label>
+            <Input
+              id="employee-pin"
+              maxLength={6}
+              inputMode="numeric"
+              className="h-10 font-mono"
+              value={pinCode}
+              onChange={(e) => setPinCode(e.target.value.replace(/\D/g, ""))}
+              placeholder="1024"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="employee-shift">Turno habitual</Label>
+            <select
+              id="employee-shift"
+              value={shiftId}
+              onChange={(e) => setShiftId(e.target.value as ShiftId)}
+              className="border-input bg-background flex h-10 w-full rounded-md border px-3 text-sm"
+            >
+              {businessConfig.teamOps.shifts.map((shift) => (
+                <option key={shift.id} value={shift.id}>
+                  {shift.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="employee-rate">Valor hora ($ ARS)</Label>
+            <Input
+              id="employee-rate"
+              type="number"
+              min={0}
+              step={100}
+              className="h-10"
+              value={hourlyRate}
+              onChange={(e) => setHourlyRate(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="space-y-2">

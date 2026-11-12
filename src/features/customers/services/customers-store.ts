@@ -1,14 +1,56 @@
+import { businessConfig } from "@/config/business.config";
 import { createId, normalizePhone, normalizeUsername } from "@/lib/ids";
 import { createLocalStore } from "@/lib/local-store";
 import { hashPassword } from "@/lib/password";
-import type { Customer, CustomerInput } from "../types";
+import type { Customer, CustomerCreditMovement, CustomerInput } from "../types";
 import { SAMPLE_CUSTOMERS } from "./sample-customers";
+
+const INITIAL_CREDIT_MOVEMENTS: CustomerCreditMovement[] = [
+  {
+    id: "cc-01",
+    customerId: "cli-ejemplo-02",
+    customerName: "Martín Gómez",
+    kind: "cargo_fiado",
+    amount: 24500,
+    reference: "Venta POS #VB-1042 · 2x Doble Bacon + Papas Cheddar",
+    dueAt: "2026-11-22T23:59:59.000Z",
+    createdAt: "2026-11-07T21:40:00.000Z",
+    user: "Caja Mostrador",
+  },
+  {
+    id: "cc-02",
+    customerId: "cli-ejemplo-02",
+    customerName: "Martín Gómez",
+    kind: "pago_fiado",
+    amount: -10000,
+    method: "transferencia",
+    reference: "Entrega parcial por transferencia",
+    createdAt: "2026-11-09T20:15:00.000Z",
+    user: "Encargado",
+  },
+  {
+    id: "cc-03",
+    customerId: "cli-ejemplo-04",
+    customerName: "Diego Pérez",
+    kind: "cargo_fiado",
+    amount: 18900,
+    reference: "Venta POS #VB-1038 · Combo Familiar Smash",
+    dueAt: "2026-11-10T23:59:59.000Z",
+    createdAt: "2026-10-28T22:40:00.000Z",
+    user: "Caja Mostrador",
+  },
+];
 
 /**
  * Los clientes se guardan en este navegador. Para compartirlos entre dispositivos,
  * reemplazá este servicio por una API o base de datos sin tocar la UI.
  */
 export const customersStore = createLocalStore<Customer[]>("burger-vb:customers", SAMPLE_CUSTOMERS);
+
+export const customerCreditStore = createLocalStore<CustomerCreditMovement[]>(
+  "burger-vb:customer-credit-v1",
+  INITIAL_CREDIT_MOVEMENTS,
+);
 
 export type AccountInput = { username: string; password: string };
 
@@ -19,6 +61,12 @@ function cleanInput(input: CustomerInput): CustomerInput {
     email: input.email.trim(),
     birthday: input.birthday,
     notes: input.notes.trim(),
+    creditLimit:
+      typeof input.creditLimit === "number" && input.creditLimit >= 0
+        ? Math.round(input.creditLimit)
+        : businessConfig.commercial.defaultCreditLimit,
+    ivaCondition: input.ivaCondition?.trim() || "Consumidor Final",
+    taxId: input.taxId?.trim() || "",
   };
 }
 
@@ -26,8 +74,9 @@ export async function createCustomer(
   input: CustomerInput,
   account?: AccountInput,
 ): Promise<Customer> {
+  const cleaned = cleanInput(input);
   const customer: Customer = {
-    ...cleanInput(input),
+    ...cleaned,
     id: createId("cli"),
     createdAt: new Date().toISOString(),
     lastOrderAt: null,
@@ -146,6 +195,7 @@ export function recordDeliveredOrder(order: DeliveredOrder): string {
     stamps: 1,
     redeemedCount: 0,
     account: null,
+    creditLimit: businessConfig.commercial.defaultCreditLimit,
   };
   customersStore.set((list) => [customer, ...list]);
   return customer.id;
@@ -158,4 +208,94 @@ export function findCustomer(customerId: string): Customer | undefined {
 export function findCustomerByUsername(username: string): Customer | undefined {
   const normalized = normalizeUsername(username);
   return customersStore.getSnapshot().find((customer) => customer.account?.username === normalized);
+}
+
+// ============================================================================
+// Cuenta Corriente / Fiado (Libro mayor inmutable de movimientos)
+// ============================================================================
+
+export function getCustomerDebt(customerId: string): number {
+  const movements = customerCreditStore.getSnapshot();
+  const balance = movements
+    .filter((m) => m.customerId === customerId)
+    .reduce((sum, m) => sum + m.amount, 0);
+  return Math.max(0, Math.round(balance));
+}
+
+export function getCustomerCreditLimit(customer: Customer): number {
+  return customer.creditLimit ?? businessConfig.commercial.defaultCreditLimit;
+}
+
+export function recordCustomerCreditCharge(input: {
+  customerId: string;
+  amount: number;
+  reference: string;
+  dueDays?: number;
+  user?: string;
+}): { ok: true; movement: CustomerCreditMovement } | { ok: false; error: string } {
+  const customer = findCustomer(input.customerId);
+  if (!customer) return { ok: false, error: "Cliente no encontrado." };
+  const amount = Math.round(input.amount);
+  if (amount <= 0) return { ok: false, error: "El importe a fiar debe ser mayor a cero." };
+
+  const currentDebt = getCustomerDebt(customer.id);
+  const limit = getCustomerCreditLimit(customer);
+  if (currentDebt + amount > limit) {
+    return {
+      ok: false,
+      error: `Supera el límite de crédito de ${customer.name} ($${limit.toLocaleString("es-AR")}). Disponible: $${Math.max(0, limit - currentDebt).toLocaleString("es-AR")}.`,
+    };
+  }
+
+  const dueDays = input.dueDays ?? businessConfig.commercial.defaultFiadoDays;
+  const dueDate = new Date(Date.now() + dueDays * 86_400_000).toISOString();
+
+  const movement: CustomerCreditMovement = {
+    id: createId("cc"),
+    customerId: customer.id,
+    customerName: customer.name,
+    kind: "cargo_fiado",
+    amount,
+    reference: input.reference.trim() || "Cargo en cuenta corriente",
+    dueAt: dueDate,
+    createdAt: new Date().toISOString(),
+    user: input.user ?? "Mostrador",
+  };
+
+  customerCreditStore.set((list) => [movement, ...list]);
+  return { ok: true, movement };
+}
+
+export function recordCustomerCreditPayment(input: {
+  customerId: string;
+  amount: number;
+  method: string;
+  reference?: string;
+  user?: string;
+}): { ok: true; movement: CustomerCreditMovement } | { ok: false; error: string } {
+  const customer = findCustomer(input.customerId);
+  if (!customer) return { ok: false, error: "Cliente no encontrado." };
+  const amount = Math.round(input.amount);
+  if (amount <= 0) return { ok: false, error: "El monto del cobro debe ser mayor a cero." };
+
+  const currentDebt = getCustomerDebt(customer.id);
+  if (currentDebt <= 0) {
+    return { ok: false, error: "Este cliente no registra deuda pendiente." };
+  }
+  const applied = Math.min(currentDebt, amount);
+
+  const movement: CustomerCreditMovement = {
+    id: createId("cc"),
+    customerId: customer.id,
+    customerName: customer.name,
+    kind: "pago_fiado",
+    amount: -applied,
+    method: input.method,
+    reference: input.reference?.trim() || `Cobro de cuenta corriente (${input.method})`,
+    createdAt: new Date().toISOString(),
+    user: input.user ?? "Mostrador",
+  };
+
+  customerCreditStore.set((list) => [movement, ...list]);
+  return { ok: true, movement };
 }

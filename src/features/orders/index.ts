@@ -14,5 +14,5 @@ export {
   STATUS_LABELS,
   isOrderStatus,
 } from "./constants";
-export { createOrder, updateOrderStatus } from "./services/orders-store";
+export { createOrder, ordersStore, updateOrderStatus } from "./services/orders-store";
 export { useOrders } from "./hooks/use-orders";

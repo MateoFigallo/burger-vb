@@ -1,11 +1,44 @@
-export type { LoyaltySettings, Redemption, Reward } from "./types";
+export type {
+  CustomerBenefitEvaluation,
+  DiscountCoupon,
+  GiftCard,
+  GiftCardStatus,
+  LoyaltySettings,
+  LoyaltyTierConfig,
+  LoyaltyTierKey,
+  Redemption,
+  Reward,
+  WalletMovement,
+  WalletMovementKind,
+} from "./types";
 export {
   MAX_STAMPS,
   MIN_STAMPS,
   addReward,
+  consumeCouponByCode,
+  createDiscountCoupon,
+  createGiftCard,
+  deleteCoupon,
+  evaluateBestBenefit,
+  findGiftCardByCode,
+  getCustomerTier,
+  getCustomerWalletBalance,
+  getGiftCardStatus,
+  loadCustomerWallet,
+  redeemGiftCardBalance,
   redeemReward,
   removeReward,
   setStampsRequired,
+  spendCustomerWallet,
+  toggleCouponActive,
+  updateLoyaltySettings,
+  voidGiftCard,
 } from "./services/loyalty-store";
-export { useLoyaltySettings, useRedemptions } from "./hooks/use-loyalty";
+export {
+  useDiscountCoupons,
+  useGiftCards,
+  useLoyaltySettings,
+  useRedemptions,
+  useWalletMovements,
+} from "./hooks/use-loyalty";
 export { StampCard } from "./components/stamp-card";
