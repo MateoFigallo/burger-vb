@@ -213,7 +213,7 @@ export function DataTransferManager() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Importar, exportar y copias"
+        title="Importar / Exportar"
         description="Exportá e importá planillas compatibles con Excel por cada área del local, o descargá y restaurá copias de seguridad JSON."
         actions={
           <Button

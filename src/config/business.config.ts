@@ -197,8 +197,8 @@ export const businessConfig = {
       },
       importar: {
         id: "importar",
-        label: "Importar, exportar y copias",
-        shortLabel: "Importar y copias",
+        label: "Importar / Exportar",
+        shortLabel: "Importar / Exportar",
         description:
           "Importación/exportación Excel por área, copias de seguridad JSON y datos demo.",
         href: "/dashboard/importar",
