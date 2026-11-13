@@ -71,7 +71,6 @@ import type {
 import {
   LogisticsErrorState,
   LogisticsLoadingSkeleton,
-  LogisticsNav,
 } from "../logistics-nav";
 import { GoodsReceiptTab } from "./goods-receipt-tab";
 import {
@@ -426,7 +425,6 @@ export function SuppliersManager() {
   if (!isReady) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsLoadingSkeleton />
       </div>
     );
@@ -435,7 +433,6 @@ export function SuppliersManager() {
   if (runtimeError) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsErrorState
           description={runtimeError}
           onRetry={() => setRuntimeError(null)}
@@ -446,8 +443,6 @@ export function SuppliersManager() {
 
   return (
     <div className="space-y-6">
-      <LogisticsNav />
-
       <PageHeader
         title="Proveedores y compras"
         description="Padrón con validación CUIT ARCA, órdenes de compra, recepción de remitos con actualización automática de costos y cuenta corriente."

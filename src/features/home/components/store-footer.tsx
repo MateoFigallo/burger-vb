@@ -8,7 +8,6 @@ import { useSystem } from "@/features/system";
 import { PAGE_CONTAINER } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
-import { useSocialLinks } from "./social-section";
 
 const LEGAL_LINKS = [
   { href: businessConfig.webAndLegal.legalRoutes.terminos, label: "Términos y condiciones" },
@@ -21,7 +20,6 @@ const linkClass =
 
 export function StoreFooter() {
   const { web } = useSystem();
-  const socials = useSocialLinks().filter((s) => s.id !== "whatsapp");
   const { developer } = businessConfig.site;
 
   return (
@@ -30,23 +28,6 @@ export function StoreFooter() {
         <div className="space-y-4">
           <Logo />
           <p className="text-muted-foreground max-w-xs text-sm text-pretty">{web.tagline}</p>
-          {socials.length > 0 && (
-            <ul className="flex gap-2" aria-label="Redes sociales">
-              {socials.map(({ id, name, href, icon: Icon }) => (
-                <li key={id}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={name}
-                    className="bg-background hover:bg-primary hover:text-primary-foreground focus-visible:ring-ring/50 grid size-11 place-items-center rounded-xl border outline-none transition-colors focus-visible:ring-3"
-                  >
-                    <Icon className="size-5" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
         <div className="space-y-3">

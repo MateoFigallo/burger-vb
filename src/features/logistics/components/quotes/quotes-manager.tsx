@@ -72,7 +72,6 @@ import type { Quote, QuoteStatus } from "../../types";
 import {
   LogisticsErrorState,
   LogisticsLoadingSkeleton,
-  LogisticsNav,
 } from "../logistics-nav";
 
 const QUOTE_STATUS_STYLES: Record<QuoteStatus, string> = {
@@ -423,7 +422,6 @@ export function QuotesManager() {
   if (!isReady) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsLoadingSkeleton />
       </div>
     );
@@ -432,7 +430,6 @@ export function QuotesManager() {
   if (runtimeError) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsErrorState
           description={runtimeError}
           onRetry={() => setRuntimeError(null)}
@@ -443,8 +440,6 @@ export function QuotesManager() {
 
   return (
     <div className="space-y-6">
-      <LogisticsNav />
-
       <PageHeader
         title="Presupuestos y cotizaciones"
         description="Arma cotizaciones para eventos, empresas o pedidos grandes sin comprometer stock hasta que el cliente confirme."

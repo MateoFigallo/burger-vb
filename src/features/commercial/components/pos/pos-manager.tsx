@@ -6,11 +6,11 @@ import {
   AlertTriangle,
   Award,
   Banknote,
-  Barcode,
   CheckCircle2,
   CreditCard,
   FileText,
   Gift,
+  Keyboard,
   Minus,
   Plus,
   Printer,
@@ -24,6 +24,7 @@ import {
   Trash2,
   UserCheck,
   Wallet,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ProductImage } from "@/components/product-image";
@@ -47,6 +48,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { businessConfig } from "@/config/business.config";
+import { PageHeader } from "@/features/admin";
 import {
   getCustomerCreditLimit,
   getCustomerDebt,
@@ -88,8 +90,10 @@ export function PosManager() {
   const isHydrated = useIsClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("todas");
+  const [helpOpen, setHelpOpen] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("consumidor_final");
+  const [customerSearch, setCustomerSearch] = useState("");
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [primaryMethod, setPrimaryMethod] = useState<PosPaymentMethod>("efectivo");
@@ -371,13 +375,6 @@ export function PosManager() {
     );
   }
 
-  const customerItems: Record<string, string> = {
-    consumidor_final: "Consumidor Final (Mostrador)",
-    ...Object.fromEntries(
-      customers.map((c) => [c.id, `${c.name} (${c.phone || "sin tel."})`]),
-    ),
-  };
-
   const paymentItems: Record<PosPaymentMethod, string> = PAYMENT_METHOD_LABELS;
 
   const splits = buildPaymentSplits();
@@ -395,112 +392,53 @@ export function PosManager() {
     .slice(0, 6);
 
   return (
-    <div className="space-y-5">
-      {/* Cabecera de estado de Caja y Barra de Teclas de Función F1–F12 */}
-      <div className="bg-card space-y-3 rounded-2xl border p-4 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/15 text-primary grid size-10 place-items-center rounded-xl">
-              <ShoppingBag className="size-5" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold tracking-tight">
-                Vender POS · Mostrador Burger VB
-              </h1>
-              <p className="text-muted-foreground text-xs">
-                Atajos rápidos de teclado F1–F12, descuento automático de stock y beneficios del
-                Club.
-              </p>
-            </div>
-          </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Vender POS"
+        description="Mostrador rápido · Descuento automático de stock y beneficios del Club."
+        actions={
+          <Button
+            className="h-11 rounded-xl px-4 font-semibold"
+            onClick={() => setHelpOpen(true)}
+          >
+            <Keyboard aria-hidden="true" className="size-4" />
+            Atajos y datos de caja
+          </Button>
+        }
+      />
 
-          {openSession ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1 text-xs font-semibold">
-                <span className="size-2 rounded-full bg-emerald-500" />
-                {openSession.registerName} · Turno #{openSession.number}
-              </Badge>
-              {openSessionSummary && (
-                <Badge variant="outline" className="px-3 py-1 text-xs font-semibold">
-                  Efectivo en caja: {formatCurrency(openSessionSummary.expectedCash)}
-                </Badge>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 rounded-lg text-xs"
-                nativeButton={false}
-                render={<Link href="/dashboard/caja" />}
-              >
-                Ir a Caja / Arqueo
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2">
-              <AlertTriangle className="size-4 text-amber-600" />
-              <span className="text-xs font-semibold text-amber-900 dark:text-amber-200">
-                Caja cerrada: abrí turno para cobrar
-              </span>
-              <Input
-                type="number"
-                value={quickOpenCashAmount}
-                onChange={(e) => setQuickOpenCashAmount(e.target.value)}
-                className="h-8 w-28 text-xs"
-                aria-label="Fondo inicial de caja"
-              />
-              <Button
-                size="sm"
-                className="h-8 rounded-lg text-xs"
-                onClick={() => {
-                  const res = openCashSession({
-                    openingAmount: Number(quickOpenCashAmount) || 0,
-                    user: "Encargado",
-                  });
-                  if (res.ok) {
-                    toast.success(`Turno #${res.value.number} abierto correctamente`);
-                  } else {
-                    toast.error(res.error);
-                  }
-                }}
-              >
-                Abrir caja ahora
-              </Button>
-            </div>
-          )}
+      {!openSession && (
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3">
+          <AlertTriangle className="size-4 shrink-0 text-amber-600" />
+          <span className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+            Caja cerrada: abrí turno para cobrar
+          </span>
+          <Input
+            type="number"
+            value={quickOpenCashAmount}
+            onChange={(e) => setQuickOpenCashAmount(e.target.value)}
+            className="h-9 w-28 text-xs"
+            aria-label="Fondo inicial de caja"
+          />
+          <Button
+            size="sm"
+            className="h-9 rounded-xl text-xs font-semibold"
+            onClick={() => {
+              const res = openCashSession({
+                openingAmount: Number(quickOpenCashAmount) || 0,
+                user: "Encargado",
+              });
+              if (res.ok) {
+                toast.success(`Turno #${res.value.number} abierto correctamente`);
+              } else {
+                toast.error(res.error);
+              }
+            }}
+          >
+            Abrir caja ahora
+          </Button>
         </div>
-
-        {/* Barra interactiva F1–F12 */}
-        <div
-          role="toolbar"
-          aria-label="Teclas rápidas de punto de venta"
-          className="flex gap-1.5 overflow-x-auto pb-1"
-        >
-          {businessConfig.commercial.functionKeys.map((item) => {
-            const isActiveMethod = primaryMethod === item.action;
-            const isActiveArca = item.action === "arca" && arcaEnabled;
-            const isCheckout = item.action === "checkout";
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => triggerFunctionKey(item.action)}
-                className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-colors ${
-                  isCheckout
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : isActiveMethod || isActiveArca
-                      ? "border-primary bg-primary/15 text-primary"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <kbd className="bg-background/80 text-foreground rounded px-1.5 py-0.5 font-mono text-[10px] font-bold shadow-xs">
-                  {item.key}
-                </kbd>
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      )}
 
       {/* Grilla Principal POS: Izquierda Catálogo / Derecha Ticket y Cobro */}
       <div className="grid items-start gap-6 lg:grid-cols-12">
@@ -521,7 +459,19 @@ export function PosManager() {
                 aria-label="Buscar producto o código de barras"
                 className="h-11 rounded-xl pr-10 pl-10"
               />
-              <Barcode className="text-muted-foreground pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2" />
+              {searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    searchInputRef.current?.focus();
+                  }}
+                  aria-label="Limpiar búsqueda de producto"
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-lg"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -644,31 +594,121 @@ export function PosManager() {
             )}
           </div>
 
-          {/* Selector de Cliente y Estado de Fidelidad / Cuenta Corriente */}
+          {/* Buscador de Cliente / Socio del Club Burger */}
           <div className="space-y-2 rounded-xl border p-3">
-            <label className="flex items-center gap-1.5 text-xs font-bold">
-              <UserCheck className="text-primary size-4" />
-              Cliente / Socio del Club Burger
-            </label>
-            <Select
-              items={customerItems}
-              value={selectedCustomerId}
-              onValueChange={(val) =>
-                setSelectedCustomerId(typeof val === "string" ? val : "consumidor_final")
-              }
-            >
-              <SelectTrigger className="h-10! w-full" aria-label="Seleccionar cliente">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="consumidor_final">Consumidor Final (Mostrador)</SelectItem>
-                {customers.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name} ({c.phone || "sin tel."})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center justify-between gap-2">
+              <label
+                htmlFor="pos-customer-search"
+                className="flex items-center gap-1.5 text-xs font-bold"
+              >
+                <UserCheck className="text-primary size-4" />
+                Cliente / Socio del Club Burger
+              </label>
+              {selectedCustomer && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCustomerId("consumidor_final");
+                    setCustomerSearch("");
+                  }}
+                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-[11px] font-semibold"
+                >
+                  <X className="size-3" />
+                  Volver a Consumidor Final
+                </button>
+              )}
+            </div>
+
+            {selectedCustomer ? (
+              <div className="bg-primary/5 border-primary/25 flex items-center justify-between gap-2 rounded-xl border px-3 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold">{selectedCustomer.name}</p>
+                  <p className="text-muted-foreground truncate text-[11px]">
+                    {selectedCustomer.phone || "Sin teléfono"}
+                    {selectedCustomer.taxId ? ` · DNI/CUIT ${selectedCustomer.taxId}` : ""}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 shrink-0 rounded-lg"
+                  aria-label="Quitar socio seleccionado"
+                  onClick={() => {
+                    setSelectedCustomerId("consumidor_final");
+                    setCustomerSearch("");
+                  }}
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="relative">
+                  <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                  <Input
+                    id="pos-customer-search"
+                    value={customerSearch}
+                    onChange={(e) => setCustomerSearch(e.target.value)}
+                    placeholder="Consumidor Final · Buscá socio por nombre, tel. o DNI..."
+                    className="h-10 rounded-xl pr-9 pl-9 text-xs"
+                  />
+                  {customerSearch.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setCustomerSearch("")}
+                      aria-label="Limpiar búsqueda de socio"
+                      className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center rounded-lg"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {customerSearch.trim().length > 0 && (
+                  <div className="bg-background max-h-44 overflow-y-auto rounded-xl border p-1 shadow-sm">
+                    {customers
+                      .filter((c) => {
+                        const q = customerSearch.trim().toLocaleLowerCase("es");
+                        return (
+                          c.name.toLocaleLowerCase("es").includes(q) ||
+                          (c.phone ?? "").toLocaleLowerCase("es").includes(q) ||
+                          (c.taxId ?? "").toLocaleLowerCase("es").includes(q)
+                        );
+                      })
+                      .slice(0, 6)
+                      .map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCustomerId(c.id);
+                            setCustomerSearch("");
+                          }}
+                          className="hover:bg-muted flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-xs"
+                        >
+                          <span className="truncate font-semibold">{c.name}</span>
+                          <span className="text-muted-foreground shrink-0 text-[11px]">
+                            {c.phone || c.taxId || "Socio"}
+                          </span>
+                        </button>
+                      ))}
+                    {customers.filter((c) => {
+                      const q = customerSearch.trim().toLocaleLowerCase("es");
+                      return (
+                        c.name.toLocaleLowerCase("es").includes(q) ||
+                        (c.phone ?? "").toLocaleLowerCase("es").includes(q) ||
+                        (c.taxId ?? "").toLocaleLowerCase("es").includes(q)
+                      );
+                    }).length === 0 && (
+                      <p className="text-muted-foreground px-2.5 py-2 text-xs">
+                        No se encontraron socios con &quot;{customerSearch}&quot;.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {selectedCustomer && (
               <div className="bg-muted/50 flex flex-wrap items-center gap-2 rounded-lg p-2 text-xs">
@@ -1221,6 +1261,100 @@ export function PosManager() {
               </div>
             </div>
           )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Pop-up de Atajos de Teclado y Datos de Caja */}
+      <Sheet open={helpOpen} onOpenChange={setHelpOpen}>
+        <SheetContent className="w-full overflow-y-auto p-6 sm:max-w-md">
+          <SheetHeader className="p-0 pb-4 text-left">
+            <SheetTitle>Atajos y datos de caja</SheetTitle>
+            <SheetDescription>
+              Información del turno actual y teclas rápidas para operar el mostrador.
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="space-y-6">
+            <div className="space-y-3 rounded-2xl border p-4">
+              <p className="text-xs font-bold tracking-wider uppercase">Estado de la caja</p>
+              {openSession ? (
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold">
+                      <span className="size-2.5 rounded-full bg-emerald-500" />
+                      {openSession.registerName}
+                    </span>
+                    <Badge variant="secondary">Turno #{openSession.number}</Badge>
+                  </div>
+                  {openSessionSummary && (
+                    <div className="bg-muted/50 flex items-center justify-between rounded-xl px-3 py-2 text-sm">
+                      <span className="text-muted-foreground">Efectivo esperado en caja</span>
+                      <span className="font-bold tabular-nums">
+                        {formatCurrency(openSessionSummary.expectedCash)}
+                      </span>
+                    </div>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="h-10 w-full rounded-xl font-semibold"
+                    nativeButton={false}
+                    render={<Link href="/dashboard/caja" onClick={() => setHelpOpen(false)} />}
+                  >
+                    Ir a Gestión de Caja y Arqueo
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                    La caja está cerrada. Abrí turno para registrar ventas.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="h-10 w-full rounded-xl font-semibold"
+                    nativeButton={false}
+                    render={<Link href="/dashboard/caja" onClick={() => setHelpOpen(false)} />}
+                  >
+                    Ir a Gestión de Caja
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs font-bold tracking-wider uppercase">
+                Teclas rápidas del POS (F1–F12)
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {businessConfig.commercial.functionKeys.map((item) => {
+                  const isActiveMethod = primaryMethod === item.action;
+                  const isActiveArca = item.action === "arca" && arcaEnabled;
+                  const isCheckout = item.action === "checkout";
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        triggerFunctionKey(item.action);
+                        setHelpOpen(false);
+                      }}
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-xs font-semibold ${
+                        isCheckout
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : isActiveMethod || isActiveArca
+                            ? "border-primary bg-primary/15 text-primary"
+                            : "bg-muted/40 hover:bg-muted"
+                      }`}
+                    >
+                      <kbd className="bg-background text-foreground rounded px-1.5 py-0.5 font-mono text-[11px] font-bold shadow-xs">
+                        {item.key}
+                      </kbd>
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </div>

@@ -56,7 +56,7 @@ import {
   restoreArchivedProduct,
 } from "../../services/logistics-store";
 import type { InventoryCategory, InventoryItem } from "../../types";
-import { LogisticsLoadingSkeleton, LogisticsNav } from "../logistics-nav";
+import { LogisticsLoadingSkeleton } from "../logistics-nav";
 import { CategoryFormSheet, DeletePreviewSheet } from "./delete-preview-dialog";
 import { InventoryFormSheet } from "./inventory-form-sheet";
 import { StockAdjustSheet } from "./stock-adjust-dialog";
@@ -163,7 +163,6 @@ export function StockManager() {
   if (!isReady) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsLoadingSkeleton />
       </div>
     );
@@ -504,8 +503,6 @@ export function StockManager() {
 
   return (
     <div className="space-y-6">
-      <LogisticsNav />
-
       <PageHeader
         title="Stock e inventario"
         description="Controlá stock, costos, márgenes, códigos de barras y combos por categoría."

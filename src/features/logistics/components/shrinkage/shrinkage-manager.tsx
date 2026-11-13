@@ -68,7 +68,6 @@ import type { RefundMethod, ShrinkageType } from "../../types";
 import {
   LogisticsErrorState,
   LogisticsLoadingSkeleton,
-  LogisticsNav,
 } from "../logistics-nav";
 
 type PeriodFilter = "7" | "30" | "90" | "365" | "all";
@@ -513,7 +512,6 @@ export function ShrinkageManager() {
   if (!isReady) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsLoadingSkeleton />
       </div>
     );
@@ -522,7 +520,6 @@ export function ShrinkageManager() {
   if (runtimeError) {
     return (
       <div className="space-y-6">
-        <LogisticsNav />
         <LogisticsErrorState
           description={runtimeError}
           onRetry={() => setRuntimeError(null)}
@@ -533,8 +530,6 @@ export function ShrinkageManager() {
 
   return (
     <div className="space-y-6">
-      <LogisticsNav />
-
       <PageHeader
         title="Mermas y devoluciones"
         description="Control valorizado al costo de roturas, vencimientos, faltantes y devoluciones parciales de pedidos con reposición automática de stock."

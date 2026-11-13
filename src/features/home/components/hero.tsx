@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion, type Variants } from "motion/react";
-import { ArrowRight, Beef, Bike, Share2, Wheat } from "lucide-react";
+import { Beef, Bike, Share2, Wheat } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useStorefront } from "@/features/menu";
@@ -81,46 +80,34 @@ export function Hero() {
             Carne seleccionada, pan de papa artesanal y salsas de la casa. Armá tu pedido en minutos
             y confirmalo por WhatsApp.
           </motion.p>
-          <motion.div variants={item} className="mt-8 flex flex-wrap items-center gap-3">
-            <Button
-              size="lg"
-              className="shadow-primary/25 h-12 w-full rounded-xl px-7 text-base font-semibold shadow-lg sm:w-auto"
-              nativeButton={false}
-              render={<Link href="#menu" />}
-            >
-              Ver el menú
-              <ArrowRight aria-hidden="true" className="size-5" />
-            </Button>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {socialLinks.map(({ id, name, href, icon: Icon, className }) => (
-                <a
-                  key={id}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={name}
-                  title={name}
-                  className={cn(
-                    "focus-visible:ring-ring/50 grid size-11 place-items-center rounded-xl shadow-xs outline-none transition-transform hover:-translate-y-0.5 focus-visible:ring-3",
-                    className,
-                  )}
-                >
-                  <Icon className="size-5" />
-                </a>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handleShare}
-                aria-label="Compartir página"
-                title="Compartir página"
-                className="size-11 rounded-xl"
+          <motion.div variants={item} className="mt-7 flex flex-wrap items-center gap-2">
+            {socialLinks.map(({ id, name, href, icon: Icon, className }) => (
+              <a
+                key={id}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={name}
+                title={name}
+                className={cn(
+                  "focus-visible:ring-ring/50 grid size-11 place-items-center rounded-xl shadow-xs outline-none transition-transform hover:-translate-y-0.5 focus-visible:ring-3",
+                  className,
+                )}
               >
-                <Share2 aria-hidden="true" className="size-5" />
-              </Button>
-            </div>
+                <Icon className="size-5" />
+              </a>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleShare}
+              aria-label="Compartir página"
+              title="Compartir página"
+              className="size-11 rounded-xl"
+            >
+              <Share2 aria-hidden="true" className="size-5" />
+            </Button>
           </motion.div>
           <motion.ul
             variants={item}

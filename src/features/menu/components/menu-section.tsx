@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { PAGE_CONTAINER } from "@/lib/layout";
 import { useStorefront } from "../hooks/use-catalog";
 import type { CategoryFilter, CategoryOption } from "../types";
@@ -56,21 +56,18 @@ export function MenuSection() {
             Estamos actualizando el menú. Volvé en un ratito.
           </p>
         ) : (
-          <motion.ul layout className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <AnimatePresence mode="popLayout">
-              {visibleProducts.map((product, index) => (
-                <motion.li
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, y: 32 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4, delay: Math.min(index, 6) * 0.05 }}
-                >
-                  <ProductCard product={product} />
-                </motion.li>
-              ))}
-            </AnimatePresence>
+          <motion.ul
+            key={active}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {visibleProducts.map((product) => (
+              <li key={product.id}>
+                <ProductCard product={product} />
+              </li>
+            ))}
           </motion.ul>
         )}
       </div>
