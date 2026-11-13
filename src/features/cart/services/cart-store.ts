@@ -47,6 +47,20 @@ export function removeFromCart(productId: string) {
   cartStore.set((items) => items.filter((item) => item.productId !== productId));
 }
 
+export function restoreCartItem(restored: CartItem) {
+  cartStore.set((items) => {
+    const existing = items.find((item) => item.productId === restored.productId);
+    if (existing) {
+      return items.map((item) =>
+        item.productId === restored.productId
+          ? { ...item, quantity: Math.min(item.quantity + restored.quantity, MAX_QUANTITY) }
+          : item,
+      );
+    }
+    return [...items, restored];
+  });
+}
+
 export function clearCart() {
   cartStore.set(() => []);
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
@@ -17,12 +16,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocalStore } from "@/lib/use-local-store";
 import { useSession } from "../hooks/use-session";
 import type { SignInResult } from "../services/auth-service";
+import {
+  authSheetStore,
+  setAuthSheetOpen,
+  setAuthSheetTab,
+  type AuthSheetTab as AuthTab,
+} from "../store/auth-sheet-store";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
-
-type AuthTab = "login" | "register";
 
 const TAB_COPY: Record<AuthTab, { title: string; description: string }> = {
   login: {
@@ -38,8 +42,9 @@ const TAB_COPY: Record<AuthTab, { title: string; description: string }> = {
 export function AuthSheet() {
   const router = useRouter();
   const { viewer } = useSession();
-  const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<AuthTab>("login");
+  const { open, tab } = useLocalStore(authSheetStore);
+  const setOpen = setAuthSheetOpen;
+  const setTab = setAuthSheetTab;
 
   if (viewer?.kind === "customer") {
     return (

@@ -7,6 +7,12 @@ export const webMenuSchema = z.object({
   promoBannerActive: z.boolean(),
   whatsappNumber: z.string().trim().min(8, "Ingresá un número de WhatsApp válido."),
   instagramHandle: z.string().trim(),
+  facebookUrl: z.union([z.literal(""), z.string().trim().url("Ingresá un link de Facebook válido.")]),
+  tiktokHandle: z.string().trim(),
+  googleReviewUrl: z.union([
+    z.literal(""),
+    z.string().trim().url("Ingresá un link de reseñas de Google válido."),
+  ]),
   address: z.string().trim().min(3, "Ingresá la dirección del local."),
   hours: z.string().trim().min(3, "Ingresá los horarios de atención."),
   deliveryInfo: z.string().trim(),

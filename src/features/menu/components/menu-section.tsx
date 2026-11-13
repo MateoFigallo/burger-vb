@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { PAGE_CONTAINER } from "@/lib/layout";
 import { useStorefront } from "../hooks/use-catalog";
 import type { CategoryFilter, CategoryOption } from "../types";
 import { CategoryTabs } from "./category-tabs";
@@ -27,8 +28,8 @@ export function MenuSection() {
     active === ALL ? products : products.filter((product) => product.categoryId === active);
 
   return (
-    <section id="menu" aria-labelledby="menu-title" className="py-16 md:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="menu" aria-labelledby="menu-title" className="py-14 md:py-20">
+      <div className={PAGE_CONTAINER}>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -55,7 +56,7 @@ export function MenuSection() {
             Estamos actualizando el menú. Volvé en un ratito.
           </p>
         ) : (
-          <motion.ul layout className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.ul layout className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <AnimatePresence mode="popLayout">
               {visibleProducts.map((product, index) => (
                 <motion.li

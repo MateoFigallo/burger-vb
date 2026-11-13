@@ -97,7 +97,7 @@ function buildQrMatrix(seedText: string): boolean[][] {
   return grid;
 }
 
-export function WebMenuManager() {
+function WebMenuManagerContent() {
   const isHydrated = useIsClient();
   const { web, regretRequests } = useSystem();
   const { products, categories } = useCatalog();
@@ -110,6 +110,9 @@ export function WebMenuManager() {
   const [promoBannerActive, setPromoBannerActive] = useState(web.promoBannerActive);
   const [whatsappNumber, setWhatsappNumber] = useState(web.whatsappNumber);
   const [instagramHandle, setInstagramHandle] = useState(web.instagramHandle);
+  const [facebookUrl, setFacebookUrl] = useState(web.facebookUrl);
+  const [tiktokHandle, setTiktokHandle] = useState(web.tiktokHandle);
+  const [googleReviewUrl, setGoogleReviewUrl] = useState(web.googleReviewUrl);
   const [address, setAddress] = useState(web.address);
   const [hours, setHours] = useState(web.hours);
   const [deliveryInfo, setDeliveryInfo] = useState(web.deliveryInfo);
@@ -195,6 +198,9 @@ export function WebMenuManager() {
       promoBannerActive,
       whatsappNumber,
       instagramHandle,
+      facebookUrl,
+      tiktokHandle,
+      googleReviewUrl,
       address,
       hours,
       deliveryInfo,
@@ -414,6 +420,42 @@ export function WebMenuManager() {
                     onChange={(e) => setDeliveryInfo(e.target.value)}
                     className="h-11"
                   />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="web-fb">Facebook (link completo, opcional)</Label>
+                  <Input
+                    id="web-fb"
+                    type="url"
+                    value={facebookUrl}
+                    onChange={(e) => setFacebookUrl(e.target.value)}
+                    placeholder="https://facebook.com/tu-local"
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="web-tiktok">TikTok (opcional)</Label>
+                  <Input
+                    id="web-tiktok"
+                    value={tiktokHandle}
+                    onChange={(e) => setTiktokHandle(e.target.value)}
+                    placeholder="@tu-local"
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label htmlFor="web-google-review">Link para dejar reseña en Google</Label>
+                  <Input
+                    id="web-google-review"
+                    type="url"
+                    value={googleReviewUrl}
+                    onChange={(e) => setGoogleReviewUrl(e.target.value)}
+                    placeholder="https://g.page/r/.../review"
+                    className="h-11"
+                  />
+                  <p className="text-muted-foreground text-xs">
+                    Lo encontrás en tu Perfil de Empresa de Google → &quot;Pedir reseñas&quot;. Si lo
+                    dejás vacío, el botón abre tu local en Google Maps.
+                  </p>
                 </div>
               </div>
 
@@ -875,4 +917,18 @@ export function WebMenuManager() {
       </AnimatePresence>
     </div>
   );
+}
+
+/** Monta el formulario recién después de hidratar, para que arranque con los datos guardados. */
+export function WebMenuManager() {
+  const isHydrated = useIsClient();
+  if (!isHydrated) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-20 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
+      </div>
+    );
+  }
+  return <WebMenuManagerContent />;
 }

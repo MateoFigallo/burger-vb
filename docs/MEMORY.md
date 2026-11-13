@@ -34,6 +34,12 @@
   - `/dashboard/web` ofrece 3 pestañas superiores (`SectionTabs`): *Portada, local y Wi-Fi* (con vista previa móvil en vivo y tarjeta de Wi-Fi para salón), *Código QR y links* (generador vectorial SVG descargable e imprimible para mesas/packaging) y *Legal y botón de arrepentimiento* (Términos, Privacidad Ley 25.326, sello de confirmación del titular/asesor y bandeja de solicitudes Res. SCI 424/2020).
 - **7. Sistema y auditoría (`/dashboard/sistema`):**
   - Dividido en 3 pestañas superiores (`SectionTabs`): *Configuración comercial y fiscal* (CUIT, condición IVA, Punto de Venta ARCA, descuentos/recargos por medio de pago, ticket térmico de 80 mm con vista previa en vivo), *Auditoría inmutable* (bitácora filtrable por categoría y exportable a CSV) y *Copias de seguridad y datos demo* (exportación/importación JSON de todos los almacenes `burger-vb:*` y restablecimiento de fábrica).
+- **8. Diseño full-width, Navigation Drawer y Tienda Pública:**
+  - **Ancho completo responsivo (`PAGE_CONTAINER`):** Todo el sitio público y el panel utilizan `max-w-[1920px] px-3 sm:px-5 lg:px-8` para aprovechar el ancho completo de pantalla con márgenes laterales sutiles y evitar solapamientos de texto en móvil (`SectionTabs` con scroll horizontal, `StatCards` y `PageHeader` con `min-w-0` y `break-words`).
+  - **Navigation Drawer moderno (`AdminShell`):** Menú lateral en escritorio y `Sheet` deslizable en móvil, con íconos en contenedores de color diferenciados por módulo, apartados desplegables/colapsables (`ChevronDown`) y sin `transition-colors` en los enlaces activos para evitar parpadeos de color al cambiar de módulo.
+  - **Tienda pública (`src/app/(shop)/page.tsx` y `layout.tsx`):**
+    - Se eliminó el botón y la sección *"Cómo pedir"* del inicio.
+    - Debajo de la tienda (`MenuSection`) se incorporó `LoyaltyShowcase` (registro/ingreso + tarjeta de fidelidad de ejemplo, cupones, monedero y niveles Bronce/Plata/Oro), `ReviewsLocation` (reseña en Google + mapa embebido de ubicación y horarios), `SocialSection` (Instagram, TikTok, Facebook y WhatsApp configurables desde `/dashboard/web`) y `StoreFooter` con enlaces a las rutas legales dinámicas (`/terminos`, `/privacidad`, `/arrepentimiento`).
 
 ## Supuestos
 - Los precios, costos, valores hora de empleados, límites de crédito y saldos de monedero se expresan en pesos argentinos (`ARS`).

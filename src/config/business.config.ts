@@ -390,6 +390,16 @@ export const businessConfig = {
     defaultPromoBanner:
       "🔥 MIÉRCOLES DE CLUB BURGER: 10% de reintegro en tu monedero + 2x1 en Papas Cheddar pidiendo desde la web.",
     defaultInstagram: "@burgervb.oficial",
+    /** Placeholders editables desde Panel → Menú digital y legal. */
+    defaultFacebookUrl: "",
+    defaultTiktok: "",
+    /** Si queda vacío, se arma un link de búsqueda en Google Maps con la dirección del local. */
+    defaultGoogleReviewUrl: "",
+    legalRoutes: {
+      terminos: "/terminos",
+      privacidad: "/privacidad",
+      arrepentimiento: "/arrepentimiento",
+    } as const,
     defaultWifiSsid: "BurgerVB_Clientes_5G",
     defaultWifiPass: "smashburger2026",
     defaultDeliveryZones: "Radio de 4 km sin cargo en pedidos superiores a $25.000",

@@ -15,6 +15,8 @@ import { STATUS_LABELS, useOrders } from "@/features/orders";
 import { formatBirthday } from "@/lib/dates";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { normalizePhone } from "@/lib/ids";
+import { PAGE_CONTAINER } from "@/lib/layout";
+import { cn } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 export function AccountPage() {
@@ -49,7 +51,7 @@ export function AccountPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-4 py-10 sm:px-6 md:py-14">
+    <div className={cn(PAGE_CONTAINER, "space-y-8 py-8 sm:py-10 md:py-14")}>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

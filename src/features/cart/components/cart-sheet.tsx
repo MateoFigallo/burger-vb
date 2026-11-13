@@ -48,7 +48,18 @@ export function CartSheet() {
               size="lg"
               className="h-11 rounded-xl px-6"
               nativeButton={false}
-              render={<Link href="/#menu" onClick={() => setCartOpen(false)} />}
+              render={
+                <Link
+                  href="/#menu"
+                  onClick={() => {
+                    setCartOpen(false);
+                    const menuEl = document.getElementById("menu");
+                    if (menuEl) {
+                      window.setTimeout(() => menuEl.scrollIntoView({ behavior: "smooth" }), 120);
+                    }
+                  }}
+                />
+              }
             >
               Ver el menú
             </Button>

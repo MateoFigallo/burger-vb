@@ -51,7 +51,7 @@ import type { AuditCategory } from "../types";
 
 type SystemTab = "config" | "auditoria" | "seguridad";
 
-export function SystemManager() {
+function SystemManagerContent() {
   const isHydrated = useIsClient();
   const { fiscal, auditLog } = useSystem();
   const [tab, setTab] = useState<SystemTab>("config");
@@ -827,4 +827,18 @@ export function SystemManager() {
       />
     </div>
   );
+}
+
+/** Monta el formulario recién después de hidratar, para que arranque con los datos guardados. */
+export function SystemManager() {
+  const isHydrated = useIsClient();
+  if (!isHydrated) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-20 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
+      </div>
+    );
+  }
+  return <SystemManagerContent />;
 }

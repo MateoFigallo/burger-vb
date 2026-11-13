@@ -44,32 +44,34 @@ export function AddToCartButton({ product, disabled = false }: AddToCartButtonPr
   }
 
   return (
-    <Button
-      size="lg"
-      className="h-11 w-full overflow-hidden rounded-xl text-sm font-semibold"
-      onClick={handleClick}
-      aria-label={`Agregar ${product.name} al carrito`}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={justAdded ? "added" : "add"}
-          initial={{ y: 12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -12, opacity: 0 }}
-          transition={{ duration: 0.18 }}
-          className="inline-flex items-center gap-2"
-        >
-          {justAdded ? (
-            <>
-              <Check aria-hidden="true" className="size-4" /> Agregado
-            </>
-          ) : (
-            <>
-              <Plus aria-hidden="true" className="size-4" /> Agregar
-            </>
-          )}
-        </motion.span>
-      </AnimatePresence>
-    </Button>
+    <motion.div whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 500, damping: 24 }}>
+      <Button
+        size="lg"
+        className="h-11 w-full overflow-hidden rounded-xl text-sm font-semibold"
+        onClick={handleClick}
+        aria-label={`Agregar ${product.name} al carrito`}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={justAdded ? "added" : "add"}
+            initial={{ y: 14, opacity: 0, scale: 0.9 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: -14, opacity: 0, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 450, damping: 24 }}
+            className="inline-flex items-center gap-2"
+          >
+            {justAdded ? (
+              <>
+                <Check aria-hidden="true" className="size-4" /> Agregado
+              </>
+            ) : (
+              <>
+                <Plus aria-hidden="true" className="size-4" /> Agregar
+              </>
+            )}
+          </motion.span>
+        </AnimatePresence>
+      </Button>
+    </motion.div>
   );
 }

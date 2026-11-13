@@ -33,6 +33,9 @@ export type WebMenuConfig = {
   promoBannerActive: boolean;
   whatsappNumber: string;
   instagramHandle: string;
+  facebookUrl: string;
+  tiktokHandle: string;
+  googleReviewUrl: string;
   address: string;
   hours: string;
   deliveryInfo: string;
