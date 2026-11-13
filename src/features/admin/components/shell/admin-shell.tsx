@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  ArrowUpDown,
   BarChart3,
   Boxes,
   Calculator,
@@ -67,6 +68,7 @@ const MODULE_VISUALS: Record<ModuleId, ModuleVisual> = {
   productos: { icon: Package, tone: "bg-lime-600/15 text-lime-700 dark:text-lime-400" },
   web: { icon: Globe, tone: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
   sistema: { icon: Settings, tone: "bg-slate-500/15 text-slate-700 dark:text-slate-300" },
+  importar: { icon: ArrowUpDown, tone: "bg-blue-500/15 text-blue-700 dark:text-blue-400" },
 };
 
 function isLogisticsModule(module: ModuleId): module is LogisticsSectionId {

@@ -6,7 +6,6 @@ import {
   Ban,
   CheckCircle2,
   Clock,
-  Download,
   FileSpreadsheet,
   Info,
   MessageCircle,
@@ -60,7 +59,6 @@ import { formatDate, formatDateTime, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useLogistics } from "../../hooks/use-logistics";
 import { foldText } from "../../schemas/logistics.schema";
-import { downloadCsv } from "../../services/csv-export";
 import {
   convertQuoteToOrder,
   createQuote,
@@ -380,45 +378,6 @@ export function QuotesManager() {
     setPreviewQuote(quote);
   }
 
-  function handleExportCsv() {
-    if (filteredQuotes.length === 0) {
-      toast.error("No hay presupuestos en la vista actual para exportar.");
-      return;
-    }
-    try {
-      downloadCsv(
-        `presupuestos-burger-vb-${new Date().toISOString().slice(0, 10)}.csv`,
-        [
-          "N.º",
-          "Fecha",
-          "Cliente",
-          "Teléfono",
-          "Artículos",
-          "Total",
-          "Válido hasta",
-          "Estado",
-          "Notas",
-        ],
-        filteredQuotes.map((quote) => [
-          quote.number,
-          formatDateTime(quote.createdAt),
-          quote.customerName,
-          quote.customerPhone ?? "",
-          quote.lines.map((i) => `${i.quantity}x ${i.productName}`).join(" | "),
-          quote.total,
-          formatDate(quote.expiresAt),
-          businessConfig.logistics.quoteStatuses[quote.effectiveStatus],
-          quote.notes ?? "",
-        ]),
-      );
-      toast.success(`CSV exportado (${filteredQuotes.length} presupuesto(s)).`);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al exportar CSV.";
-      setRuntimeError(message);
-    }
-  }
-
   if (!isReady) {
     return (
       <div className="space-y-6">
@@ -444,25 +403,14 @@ export function QuotesManager() {
         title="Presupuestos y cotizaciones"
         description="Arma cotizaciones para eventos, empresas o pedidos grandes sin comprometer stock hasta que el cliente confirme."
         actions={
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleExportCsv}
-              className="h-11 gap-2 rounded-xl px-4 font-semibold"
-            >
-              <Download className="size-4" />
-              Exportar CSV
-            </Button>
-            <Button
-              type="button"
-              onClick={openNewQuoteSheet}
-              className="h-11 gap-2 rounded-xl px-5 font-bold"
-            >
-              <Plus className="size-4" />
-              + Nuevo presupuesto
-            </Button>
-          </>
+          <Button
+            type="button"
+            onClick={openNewQuoteSheet}
+            className="h-11 gap-2 rounded-xl px-5 font-bold"
+          >
+            <Plus className="size-4" />
+            Nuevo presupuesto
+          </Button>
         }
       />
 

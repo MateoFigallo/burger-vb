@@ -1,22 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  AlertTriangle,
   Database,
-  Download,
   FileSpreadsheet,
-  HardDrive,
   Lock,
   Plus,
   Printer,
-  RotateCcw,
   Search,
   Settings,
-  ShieldAlert,
   ShieldCheck,
-  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -34,28 +28,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { businessConfig } from "@/config/business.config";
-import { ConfirmDialog, PageHeader, SectionTabs, StatCards, type Stat } from "@/features/admin";
+import { PageHeader, SectionTabs, StatCards, type Stat } from "@/features/admin";
 import { formatDate } from "@/lib/format";
 import { useIsClient } from "@/lib/use-local-store";
 import { useSystem } from "../hooks/use-system";
 import { systemFiscalSchema } from "../schemas/system.schema";
 import {
-  exportFullSystemBackup,
   getLocalStorageModulesSummary,
-  importFullSystemBackup,
   recordAuditEntry,
-  resetAllDemoData,
   updateSystemFiscalConfig,
 } from "../services/system-store";
 import type { AuditCategory } from "../types";
 
-type SystemTab = "config" | "auditoria" | "seguridad";
+type SystemTab = "config" | "auditoria";
 
 function SystemManagerContent() {
   const isHydrated = useIsClient();
   const { fiscal, auditLog } = useSystem();
   const [tab, setTab] = useState<SystemTab>("config");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Estado Configuración Fiscal y Comercial
   const [businessLegalName, setBusinessLegalName] = useState(fiscal.businessLegalName);
@@ -79,9 +69,6 @@ function SystemManagerContent() {
   const [manualAuditAction, setManualAuditAction] = useState("");
   const [manualAuditDetail, setManualAuditDetail] = useState("");
   const [manualAuditCat, setManualAuditCat] = useState<AuditCategory>("SISTEMA_CONFIG");
-
-  // Confirmación de reset de datos demo
-  const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
   const filteredAudit = useMemo(() => {
     const q = auditSearch.trim().toLowerCase();
@@ -210,58 +197,11 @@ function SystemManagerContent() {
     toast.success("Bitácora de auditoría exportada en CSV");
   }
 
-  function handleDownloadBackup() {
-    const json = exportFullSystemBackup();
-    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `backup-burger-vb-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    toast.success("Copia de seguridad completa descargada (.json)");
-  }
-
-  function handleImportBackupFile(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = typeof reader.result === "string" ? reader.result : "";
-      const res = importFullSystemBackup(content);
-      if (!res.ok) {
-        toast.error(res.error);
-        return;
-      }
-      toast.success(`Copia restaurada (${res.keysCount} módulos). Recargando...`);
-      setTimeout(() => window.location.reload(), 900);
-    };
-    reader.readAsText(file);
-    e.target.value = "";
-  }
-
-  function handleConfirmResetDemo() {
-    resetAllDemoData();
-    setConfirmResetOpen(false);
-    toast.success("Datos de demostración restablecidos a su estado original");
-    setTimeout(() => window.location.reload(), 700);
-  }
-
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Configuración, auditoría y copias"
-        description="Ajustá parámetros fiscales ARCA, descuentos por medio de pago, ticket térmico de 80 mm, bitácora de auditoría inmutable y copias de seguridad."
-        actions={
-          <Button
-            variant="outline"
-            className="h-11 rounded-xl px-4 font-semibold"
-            onClick={handleDownloadBackup}
-          >
-            <Download className="size-4" />
-            Descargar backup JSON
-          </Button>
-        }
+        title="Sistema y auditoría"
+        description="Ajustá parámetros fiscales ARCA, descuentos por medio de pago, ticket térmico de 80 mm y bitácora de auditoría inmutable."
       />
 
       <StatCards stats={stats} />
@@ -279,7 +219,6 @@ function SystemManagerContent() {
             icon: ShieldCheck,
             count: auditLog.length,
           },
-          { value: "seguridad", label: "Copias de seguridad y datos demo", icon: HardDrive },
         ]}
       />
 
@@ -681,150 +620,7 @@ function SystemManagerContent() {
             )}
           </motion.div>
         )}
-
-        {tab === "seguridad" && (
-          <motion.div
-            key="seguridad"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.16, ease: "easeOut" }}
-            className="grid gap-6 lg:grid-cols-12"
-          >
-            <div className="bg-background min-w-0 space-y-5 rounded-2xl border p-5 lg:col-span-7">
-              <div>
-                <h3 className="text-lg font-bold">
-                  Respaldo integral y portabilidad de base local
-                </h3>
-                <p className="text-muted-foreground text-xs">
-                  Descargá una copia completa en JSON con el menú, stock, clientes, sellos, caja,
-                  equipo y configuración, o restaurala en otra computadora del local.
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-3 rounded-2xl border p-4">
-                  <Download className="text-primary size-6" />
-                  <div>
-                    <p className="font-bold">Exportar copia de seguridad</p>
-                    <p className="text-muted-foreground text-xs">
-                      Genera un archivo `.json` con todos los módulos actuales de Burger VB.
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    className="h-10 w-full rounded-xl font-bold"
-                    onClick={handleDownloadBackup}
-                  >
-                    Descargar Backup (.json)
-                  </Button>
-                </div>
-
-                <div className="space-y-3 rounded-2xl border p-4">
-                  <Upload className="text-primary size-6" />
-                  <div>
-                    <p className="font-bold">Restaurar desde archivo</p>
-                    <p className="text-muted-foreground text-xs">
-                      Cargá un respaldo `.json` previamente descargado desde Burger VB.
-                    </p>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="application/json,.json"
-                    onChange={handleImportBackupFile}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-10 w-full rounded-xl font-bold"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    Seleccionar archivo JSON
-                  </Button>
-                </div>
-              </div>
-
-              <div className="border-destructive/30 bg-destructive/5 space-y-3 rounded-2xl border p-4">
-                <div className="flex items-start gap-3">
-                  <ShieldAlert className="text-destructive mt-0.5 size-5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-bold">
-                      Restablecer datos de demostración de Burger VB
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                      Vuelve a cargar el estado inicial de fábrica de todos los módulos (menú,
-                      stock, clientes, club de sellos, caja, equipo y configuración) sin cerrar tu
-                      sesión actual.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="h-10 rounded-xl font-bold"
-                  onClick={() => setConfirmResetOpen(true)}
-                >
-                  <RotateCcw className="size-4" />
-                  Restablecer datos de fábrica / demo
-                </Button>
-              </div>
-            </div>
-
-            <div className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold">Estado de almacenes locales</h4>
-                  <p className="text-muted-foreground text-xs">
-                    Persistencia activa en este navegador (`localStorage`).
-                  </p>
-                </div>
-                <Badge variant="secondary" className="rounded-full">
-                  {localStores.length} tiendas
-                </Badge>
-              </div>
-
-              {localStores.length === 0 ? (
-                <div className="flex items-center gap-2 rounded-xl border p-4 text-xs">
-                  <AlertTriangle className="text-amber-500 size-4" />
-                  <span>Usando semillas por defecto en memoria (sin cambios guardados aún).</span>
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-xl border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Clave del módulo</TableHead>
-                        <TableHead className="text-right">Tamaño</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {localStores.map((item) => (
-                        <TableRow key={item.key}>
-                          <TableCell className="font-mono text-xs">{item.key}</TableCell>
-                          <TableCell className="text-right font-mono text-xs">
-                            {(item.sizeBytes / 1024).toFixed(1)} KB
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
       </AnimatePresence>
-
-      <ConfirmDialog
-        open={confirmResetOpen}
-        onOpenChange={setConfirmResetOpen}
-        title="¿Restablecer todos los datos de demostración?"
-        description="Se restaurarán los productos, stock, caja, clientes, equipo y configuración a los valores iniciales de Burger VB."
-        confirmLabel="Sí, restablecer todo"
-        onConfirm={handleConfirmResetDemo}
-      />
     </div>
   );
 }

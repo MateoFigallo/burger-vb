@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Banknote, BarChart3, ShoppingBag } from "lucide-react";
+import { Banknote } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useCommercial } from "@/features/commercial";
@@ -35,29 +35,12 @@ export function OrdersOverview() {
             variant="outline"
             className="h-10 rounded-xl font-semibold"
             nativeButton={false}
-            render={<Link href="/dashboard/resumen" />}
-          >
-            <BarChart3 className="size-4" />
-            Resumen y análisis
-          </Button>
-          <Button
-            variant="outline"
-            className="h-10 rounded-xl font-semibold"
-            nativeButton={false}
             render={<Link href="/dashboard/caja" />}
           >
             <Banknote className="size-4" />
             {openSession && openSessionSummary
               ? `Caja: ${formatCurrency(openSessionSummary.expectedCash)}`
               : "Abrir Caja"}
-          </Button>
-          <Button
-            className="h-10 rounded-xl font-bold"
-            nativeButton={false}
-            render={<Link href="/dashboard/vender" />}
-          >
-            <ShoppingBag className="size-4" />
-            Vender POS (F1)
           </Button>
         </div>
       </motion.div>

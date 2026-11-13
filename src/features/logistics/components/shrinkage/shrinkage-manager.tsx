@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import {
   AlertTriangle,
-  Download,
   Flame,
   PackageMinus,
   PackageX,
@@ -58,7 +57,6 @@ import { formatDateTime, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useLogistics } from "../../hooks/use-logistics";
 import { foldText } from "../../schemas/logistics.schema";
-import { downloadCsv } from "../../services/csv-export";
 import {
   adjustProductStock,
   createPartialReturn,
@@ -430,80 +428,6 @@ export function ShrinkageManager() {
     setActiveTab("devoluciones");
   }
 
-  function handleExportCsv() {
-    try {
-      if (activeTab === "mermas") {
-        if (filteredShrinkages.length === 0) {
-          toast.error("No hay mermas en la vista actual para exportar.");
-          return;
-        }
-        downloadCsv(
-          `mermas-burger-vb-${new Date().toISOString().slice(0, 10)}.csv`,
-          [
-            "Fecha",
-            "Producto",
-            "Tipo",
-            "Cantidad",
-            "Unidad",
-            "Costo unitario",
-            "Pérdida total",
-            "Motivo",
-            "Registrado por",
-          ],
-          filteredShrinkages.map((record) => [
-            formatDateTime(record.createdAt),
-            record.productName,
-            businessConfig.logistics.movementTypes[record.type],
-            Math.abs(record.quantity),
-            record.unit,
-            record.unitCost,
-            record.totalValue,
-            record.reason,
-            record.user,
-          ]),
-        );
-        toast.success(
-          `CSV exportado (${filteredShrinkages.length} registro(s) de mermas).`,
-        );
-      } else {
-        if (filteredReturns.length === 0) {
-          toast.error("No hay devoluciones en la vista actual para exportar.");
-          return;
-        }
-        downloadCsv(
-          `devoluciones-burger-vb-${new Date().toISOString().slice(0, 10)}.csv`,
-          [
-            "Fecha",
-            "Pedido",
-            "Cliente",
-            "Artículos devueltos",
-            "Medio de reintegro",
-            "Total reintegrado",
-            "Motivo",
-            "Registrado por",
-          ],
-          filteredReturns.map((record) => [
-            formatDateTime(record.createdAt),
-            record.orderNumber,
-            record.customerName,
-            record.lines.map((i) => `${i.quantity}x ${i.productName}`).join(" | "),
-            businessConfig.logistics.refundMethods[record.refundMethod],
-            record.totalRefund,
-            record.reason,
-            record.user,
-          ]),
-        );
-        toast.success(
-          `CSV exportado (${filteredReturns.length} devolución(es) parciales).`,
-        );
-      }
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al exportar el archivo CSV.";
-      setRuntimeError(message);
-    }
-  }
-
   const selectedShrinkageProduct = useMemo(
     () => nonKitProducts.find((p) => p.id === selectedProductId) ?? null,
     [nonKitProducts, selectedProductId],
@@ -560,21 +484,11 @@ export function ShrinkageManager() {
             <Button
               type="button"
               variant="outline"
-              onClick={handleExportCsv}
-              className="h-11 gap-2 rounded-xl px-4 font-semibold"
-            >
-              <Download className="size-4" />
-              Exportar CSV
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
               onClick={openNewReturnSheet}
               className="h-11 gap-2 rounded-xl px-4 font-semibold"
             >
               <Undo2 className="size-4" />
-              + Devolución parcial
+              Devolución parcial
             </Button>
 
             <Button
@@ -583,7 +497,7 @@ export function ShrinkageManager() {
               className="h-11 gap-2 rounded-xl px-5 font-bold"
             >
               <Plus className="size-4" />
-              + Registrar merma
+              Registrar merma
             </Button>
           </>
         }

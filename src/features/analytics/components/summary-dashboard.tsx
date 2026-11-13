@@ -330,27 +330,6 @@ export function SummaryDashboard() {
       <PageHeader
         title="Resumen y centro de análisis"
         description="Visión integral de tu hamburguesería dividida por pulso operativo, ventas, stock valorizado y fidelización."
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              className="h-10 rounded-xl font-semibold"
-              nativeButton={false}
-              render={<Link href="/dashboard/caja" />}
-            >
-              <Banknote className="size-4" />
-              Ver Caja
-            </Button>
-            <Button
-              className="h-10 rounded-xl font-bold"
-              nativeButton={false}
-              render={<Link href="/dashboard/vender" />}
-            >
-              <ShoppingBag className="size-4" />
-              Vender POS (F1)
-            </Button>
-          </div>
-        }
       />
 
       {/* Barra superior divisora de apartados analíticos */}

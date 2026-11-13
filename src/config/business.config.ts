@@ -30,7 +30,8 @@ export type ModuleId =
   | "monedero"
   | "campanas"
   | "equipo"
-  | "sistema";
+  | "sistema"
+  | "importar";
 
 export type LogisticsSectionId = "inventario" | "mermas" | "presupuestos" | "proveedores";
 
@@ -191,8 +192,16 @@ export const businessConfig = {
         label: "Sistema y auditoría",
         shortLabel: "Sistema",
         description:
-          "Configuración comercial y fiscal ARCA, bitácora de auditoría inmutable y copias de seguridad.",
+          "Configuración comercial y fiscal ARCA, y bitácora de auditoría inmutable.",
         href: "/dashboard/sistema",
+      },
+      importar: {
+        id: "importar",
+        label: "Importar, exportar y copias",
+        shortLabel: "Importar y copias",
+        description:
+          "Importación/exportación Excel por área, copias de seguridad JSON y datos demo.",
+        href: "/dashboard/importar",
       },
     } satisfies Record<ModuleId, PanelModule>,
 
@@ -209,7 +218,7 @@ export const businessConfig = {
       },
       { label: "Equipo", modules: ["equipo"] },
       { label: "Menú y web", modules: ["productos", "web"] },
-      { label: "Sistema", modules: ["sistema"] },
+      { label: "Sistema", modules: ["sistema", "importar"] },
     ] satisfies PanelGroup[],
   },
 
@@ -424,5 +433,61 @@ export const businessConfig = {
       RRHH_FICHAJE: "Equipo, RRHH y Roles",
       SISTEMA_CONFIG: "Configuración y Backups",
     } as const,
+    transferAreas: [
+      {
+        id: "stock",
+        label: "Stock e inventario",
+        description: "Artículos, SKUs, stock actual, mínimo, costo y precio unitario.",
+        supportsImport: true,
+      },
+      {
+        id: "productos",
+        label: "Menú y productos",
+        description: "Hamburguesas, combos, bebidas, precios y estado de disponibilidad.",
+        supportsImport: true,
+      },
+      {
+        id: "clientes",
+        label: "Clientes y fiado",
+        description: "Padrón de socios, teléfonos, nivel, sellos, saldo de monedero y deuda.",
+        supportsImport: true,
+      },
+      {
+        id: "proveedores",
+        label: "Proveedores",
+        description: "Razón social, CUIT, rubro, teléfono, condición de pago y saldo.",
+        supportsImport: true,
+      },
+      {
+        id: "mermas",
+        label: "Mermas y devoluciones",
+        description: "Registro histórico valorizado al costo de roturas, vencimientos y devoluciones.",
+        supportsImport: false,
+      },
+      {
+        id: "presupuestos",
+        label: "Presupuestos y cotizaciones",
+        description: "Cotizaciones emitidas, cliente, estado, vigencia y total.",
+        supportsImport: false,
+      },
+      {
+        id: "ventas",
+        label: "Ventas POS",
+        description: "Tickets emitidos, medio de pago, cliente asociado, total y estado.",
+        supportsImport: false,
+      },
+      {
+        id: "caja",
+        label: "Movimientos de caja",
+        description: "Ingresos, egresos y sesiones de caja registradas.",
+        supportsImport: false,
+      },
+      {
+        id: "auditoria",
+        label: "Auditoría del sistema",
+        description: "Bitácora cronológica de acciones críticas.",
+        supportsImport: false,
+      },
+    ] as const,
   },
 } as const;

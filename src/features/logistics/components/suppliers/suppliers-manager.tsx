@@ -6,7 +6,6 @@ import {
   Building2,
   ClipboardList,
   CreditCard,
-  Download,
   Eye,
   FileCheck2,
   FilePlus2,
@@ -59,7 +58,6 @@ import { formatDate, formatDateTime, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useLogistics } from "../../hooks/use-logistics";
 import { foldText } from "../../schemas/logistics.schema";
-import { downloadCsv } from "../../services/csv-export";
 import { formatCuit } from "../../services/cuit";
 import { updatePurchaseOrderStatus } from "../../services/logistics-store";
 import type {
@@ -317,96 +315,6 @@ export function SuppliersManager() {
     return map;
   }, [suppliers]);
 
-  function handleExportCsv() {
-    try {
-      if (activeTab === "ordenes") {
-        if (filteredOrders.length === 0) {
-          toast.error("No hay órdenes de compra para exportar.");
-          return;
-        }
-        downloadCsv(
-          `ordenes-compra-burger-vb-${new Date().toISOString().slice(0, 10)}.csv`,
-          [
-            "Código",
-            "Fecha",
-            "Proveedor",
-            "Artículos",
-            "Total estimado",
-            "Estado",
-          ],
-          filteredOrders.map((po) => [
-            po.code,
-            formatDateTime(po.createdAt),
-            supplierById.get(po.supplierId)?.businessName ?? "Proveedor",
-            po.items.map((i) => `${i.quantity}x ${i.productName}`).join(" | "),
-            po.total,
-            po.status,
-          ]),
-        );
-        toast.success(`CSV exportado (${filteredOrders.length} orden(es)).`);
-        return;
-      }
-
-      if (activeTab === "cuenta" && currentLedgerSupplier) {
-        if (currentSupplierMovements.length === 0) {
-          toast.error("Este proveedor aún no registra movimientos.");
-          return;
-        }
-        downloadCsv(
-          `cuenta-corriente-${foldText(currentLedgerSupplier.businessName).replace(
-            /\s+/g,
-            "-",
-          )}.csv`,
-          ["Fecha", "Tipo", "Referencia", "Importe", "Saldo resultante"],
-          currentSupplierMovements.map((entry) => [
-            formatDateTime(entry.createdAt),
-            entry.type,
-            entry.reference,
-            entry.amount,
-            entry.balanceAfter,
-          ]),
-        );
-        toast.success(
-          `Cuenta corriente de ${currentLedgerSupplier.businessName} exportada a CSV.`,
-        );
-        return;
-      }
-
-      if (filteredSuppliers.length === 0) {
-        toast.error("No hay proveedores en la vista actual para exportar.");
-        return;
-      }
-      downloadCsv(
-        `proveedores-burger-vb-${new Date().toISOString().slice(0, 10)}.csv`,
-        [
-          "Razón social",
-          "CUIT",
-          "Condición IVA",
-          "Teléfono",
-          "Email",
-          "Dirección",
-          "Saldo cuenta corriente",
-          "Estado",
-        ],
-        filteredSuppliers.map((s) => [
-          s.businessName,
-          formatCuit(s.cuit),
-          s.ivaCondition,
-          s.phone,
-          s.email,
-          s.address,
-          s.balance,
-          s.active ? "Activo" : "Archivado",
-        ]),
-      );
-      toast.success(`CSV exportado (${filteredSuppliers.length} proveedor(es)).`);
-    } catch (err) {
-      setRuntimeError(
-        err instanceof Error ? err.message : "Error al exportar CSV.",
-      );
-    }
-  }
-
   function handleMarkOrderSolicitada(order: PurchaseOrder) {
     const result = updatePurchaseOrderStatus(order.id, "Solicitada");
     if (!result.ok) {
@@ -451,16 +359,6 @@ export function SuppliersManager() {
             <Button
               type="button"
               variant="outline"
-              onClick={handleExportCsv}
-              className="h-11 gap-2 rounded-xl px-4 font-semibold"
-            >
-              <Download className="size-4" />
-              Exportar CSV
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
               onClick={() => setInvoiceScanOpen(true)}
               className="h-11 gap-2 rounded-xl px-4 font-semibold"
             >
@@ -479,7 +377,7 @@ export function SuppliersManager() {
               className="h-11 gap-2 rounded-xl px-4 font-semibold"
             >
               <FilePlus2 className="size-4" />
-              + Orden de compra
+              Orden de compra
             </Button>
 
             <Button
@@ -491,7 +389,7 @@ export function SuppliersManager() {
               className="h-11 gap-2 rounded-xl px-5 font-bold"
             >
               <Plus className="size-4" />
-              + Proveedor
+              Proveedor
             </Button>
           </>
         }

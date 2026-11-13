@@ -36,6 +36,7 @@ export const DEFAULT_TEAM: Team = {
         "campanas",
         "equipo",
         "sistema",
+        "importar",
       ],
     },
     {

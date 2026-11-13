@@ -7,13 +7,11 @@ import {
   ArrowUpDown,
   Boxes,
   DollarSign,
-  Download,
   Layers,
   PackagePlus,
   Pencil,
   Percent,
   Plus,
-  RotateCcw,
   Search,
   SlidersHorizontal,
   Trash2,
@@ -50,7 +48,6 @@ import {
   matchesInventoryQuery,
   parseInventoryQuery,
 } from "../../schemas/logistics.schema";
-import { downloadCsv } from "../../services/csv-export";
 import {
   resetLogisticsToDefault,
   restoreArchivedProduct,
@@ -221,43 +218,6 @@ export function StockManager() {
       else next.delete(productId);
       return next;
     });
-  }
-
-  function handleExportCsv() {
-    downloadCsv(
-      "inventario-burger-vb.csv",
-      [
-        "ID",
-        "Producto",
-        "Presentacion",
-        "Categoria",
-        "Precio_Venta",
-        "Costo_Unitario",
-        "Margen_Pct",
-        "Stock",
-        "Unidad",
-        "Codigo_Barras",
-        "PLU",
-        "En_Menu",
-        "Estado",
-      ],
-      visibleItems.map((item) => [
-        item.id,
-        item.name,
-        item.presentation,
-        item.categoryName,
-        getFinalPrice(item),
-        item.effectiveCost,
-        item.marginPercent ?? "",
-        item.effectiveStock,
-        businessConfig.logistics.units[item.unit].short,
-        item.barcode,
-        item.plu,
-        item.available ? "Si" : "No",
-        item.archived ? "Archivado" : "Activo",
-      ]),
-    );
-    toast.success("Exportaste el inventario en CSV");
   }
 
   function handleRestore(item: InventoryItem) {
@@ -508,22 +468,6 @@ export function StockManager() {
         description="Controlá stock, costos, márgenes, códigos de barras y combos por categoría."
         actions={
           <>
-            <Button
-              variant="outline"
-              className="h-11 rounded-xl"
-              onClick={handleExportCsv}
-            >
-              <Download aria-hidden="true" className="size-4" />
-              Exportar CSV
-            </Button>
-            <Button
-              variant="outline"
-              className="h-11 rounded-xl"
-              onClick={() => setConfirmReset(true)}
-            >
-              <RotateCcw aria-hidden="true" className="size-4" />
-              Restablecer demo
-            </Button>
             <Button
               variant="secondary"
               className="h-11 rounded-xl font-semibold"

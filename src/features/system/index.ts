@@ -29,3 +29,4 @@ export {
 export { LegalDocument, type LegalDocId } from "./components/legal-document";
 export { WebMenuManager } from "./components/web-menu-manager";
 export { SystemManager } from "./components/system-manager";
+export { DataTransferManager } from "./components/data-transfer-manager";

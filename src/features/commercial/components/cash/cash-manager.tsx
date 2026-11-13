@@ -262,15 +262,6 @@ export function CashManager() {
                 ))}
               </SelectContent>
             </Select>
-            <Button
-              variant="outline"
-              className="h-10 rounded-xl font-semibold"
-              nativeButton={false}
-              render={<Link href="/dashboard/vender" />}
-            >
-              <ShoppingBag className="size-4" />
-              Ir a Vender POS (F1)
-            </Button>
           </div>
         }
       />
