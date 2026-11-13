@@ -246,7 +246,7 @@ export function WalletCouponsManager() {
             {/* Cargar saldo a cliente */}
             <form
               onSubmit={handleLoadWallet}
-              className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+              className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
             >
               <div>
                 <h2 className="text-base font-extrabold">Cargar saldo en Monedero Club</h2>
@@ -328,7 +328,7 @@ export function WalletCouponsManager() {
             </form>
 
             {/* Configuración de Cashback y Clientes con Saldo */}
-            <div className="space-y-6 lg:col-span-7">
+            <div className="min-w-0 space-y-6 lg:col-span-7">
               <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
@@ -470,7 +470,7 @@ export function WalletCouponsManager() {
         <div className="grid gap-6 lg:grid-cols-12">
           <form
             onSubmit={handleCreateGiftCard}
-            className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+            className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
           >
             <div>
               <h2 className="text-base font-extrabold">Emitir nueva Gift Card / Voucher</h2>
@@ -573,7 +573,7 @@ export function WalletCouponsManager() {
             </Button>
           </form>
 
-          <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
+          <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
             <div>
               <h2 className="text-base font-extrabold">Tarjetas emitidas y saldos</h2>
               <p className="text-muted-foreground text-xs">
@@ -672,7 +672,7 @@ export function WalletCouponsManager() {
         <div className="grid gap-6 lg:grid-cols-12">
           <form
             onSubmit={handleCreateCoupon}
-            className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+            className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
           >
             <div>
               <h2 className="text-base font-extrabold">Crear cupón promocional</h2>
@@ -736,7 +736,7 @@ export function WalletCouponsManager() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-2">
               <div>
                 <label className="text-xs font-semibold">Compra mín. ($)</label>
                 <Input
@@ -772,7 +772,7 @@ export function WalletCouponsManager() {
             </Button>
           </form>
 
-          <section className="bg-card rounded-2xl border shadow-sm lg:col-span-7">
+          <section className="bg-card min-w-0 rounded-2xl border shadow-sm lg:col-span-7">
             <div className="border-b px-5 py-4">
               <h2 className="text-base font-extrabold">Catálogo de cupones vigentes</h2>
               <p className="text-muted-foreground text-xs">

@@ -419,7 +419,7 @@ export function TeamManager() {
           >
             <div className="grid gap-6 lg:grid-cols-12">
               {/* Reloj de Fichaje por PIN */}
-              <div className="bg-background space-y-4 rounded-2xl border p-5 lg:col-span-5">
+              <div className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <span className="text-primary text-xs font-bold tracking-wider uppercase">
@@ -501,7 +501,7 @@ export function TeamManager() {
               </div>
 
               {/* Registro de Adelantos, Vales y Liquidaciones */}
-              <div className="bg-background space-y-4 rounded-2xl border p-5 lg:col-span-7">
+              <div className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-7">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <span className="text-primary text-xs font-bold tracking-wider uppercase">

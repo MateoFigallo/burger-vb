@@ -399,7 +399,7 @@ export function CashManager() {
               {/* Formulario de Ingreso / Egreso de Caja */}
               <form
                 onSubmit={handleAddMovement}
-                className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+                className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -485,7 +485,7 @@ export function CashManager() {
               </form>
 
               {/* Listado de Movimientos + Cortes X */}
-              <div className="space-y-6 lg:col-span-7">
+              <div className="min-w-0 space-y-6 lg:col-span-7">
                 <section className="bg-card rounded-2xl border shadow-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b px-5 py-4">
                     <div>
@@ -592,7 +592,7 @@ export function CashManager() {
       {/* APARTADO 2: ARQUEO DE UN SOLO DUEÑO Y CIERRE Z */}
       {activeTab === "arqueo" && (
         <div className="grid gap-6 lg:grid-cols-12">
-          <section className="bg-card space-y-5 rounded-2xl border p-6 shadow-sm lg:col-span-7">
+          <section className="bg-card min-w-0 space-y-5 rounded-2xl border p-5 shadow-sm sm:p-6 lg:col-span-7">
             <div>
               <Badge variant="outline" className="mb-2">
                 Modo un solo dueño · Vista transparente
@@ -723,7 +723,7 @@ export function CashManager() {
           </section>
 
           {/* Desglose por medio de pago del turno */}
-          <section className="bg-card space-y-4 rounded-2xl border p-6 shadow-sm lg:col-span-5">
+          <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm sm:p-6 lg:col-span-5">
             <h3 className="text-base font-extrabold">Desglose por medio de cobro</h3>
             <p className="text-muted-foreground text-xs">
               Conciliá tus terminales Posnet, Mercado Pago y transferencias antes de cerrar.
@@ -832,7 +832,7 @@ export function CashManager() {
       {/* APARTADO 4: CAJAS, SUCURSALES Y TRASPASOS DE FONDOS */}
       {activeTab === "sucursales" && (
         <div className="grid gap-6 lg:grid-cols-12">
-          <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
+          <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
             <div className="flex items-center gap-2">
               <Building2 className="text-primary size-5" />
               <div>
@@ -912,7 +912,7 @@ export function CashManager() {
             </div>
           </section>
 
-          <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
+          <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
             <div className="flex items-center gap-2">
               <ArrowLeftRight className="text-primary size-5" />
               <div>

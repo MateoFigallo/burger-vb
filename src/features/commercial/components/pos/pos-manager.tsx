@@ -48,7 +48,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { businessConfig } from "@/config/business.config";
-import { PageHeader } from "@/features/admin";
+import { PageHeader, SectionTabs, type SectionTab } from "@/features/admin";
 import {
   getCustomerCreditLimit,
   getCustomerDebt,
@@ -81,6 +81,8 @@ type CartLine = {
   quantity: number;
 };
 
+type PosTabId = "vender" | "historial";
+
 export function PosManager() {
   const { state, openSession, openSessionSummary } = useCommercial();
   const { items: inventoryItems, categories } = useLogistics();
@@ -90,6 +92,7 @@ export function PosManager() {
   const isHydrated = useIsClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("todas");
+  const [activeTab, setActiveTab] = useState<PosTabId>("vender");
   const [helpOpen, setHelpOpen] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("consumidor_final");
@@ -387,9 +390,19 @@ export function PosManager() {
   const matchedGiftCard =
     usesGiftCard && giftCardCode.trim() ? findGiftCardByCode(giftCardCode) : undefined;
 
-  const shiftSales = state.sales
-    .filter((s) => (openSession ? s.sessionId === openSession.id : true))
-    .slice(0, 6);
+  const shiftSales = state.sales.filter((s) =>
+    openSession ? s.sessionId === openSession.id : true,
+  );
+
+  const posTabs: SectionTab<PosTabId>[] = [
+    { value: "vender", label: "Venta y cobro", icon: ShoppingBag },
+    {
+      value: "historial",
+      label: "Historial de ventas",
+      icon: Receipt,
+      count: shiftSales.length,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -440,12 +453,21 @@ export function PosManager() {
         </div>
       )}
 
+      <SectionTabs<PosTabId>
+        id="pos-tabs"
+        label="Secciones de Vender POS"
+        tabs={posTabs}
+        value={activeTab}
+        onChange={setActiveTab}
+      />
+
       {/* Grilla Principal POS: Izquierda Catálogo / Derecha Ticket y Cobro */}
+      {activeTab === "vender" && (
       <div className="grid items-start gap-6 lg:grid-cols-12">
         {/* Columna Izquierda: Buscador + Categorías + Grilla de Hamburguesas y Combos */}
         <section
           aria-label="Catálogo de productos POS"
-          className="bg-card space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-7"
+          className="bg-card min-w-0 space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-7"
         >
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
@@ -572,7 +594,7 @@ export function PosManager() {
         {/* Columna Derecha: Ticket Actual + Cliente + Beneficios + Medios de Pago */}
         <section
           aria-label="Ticket y cobro"
-          className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+          className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
         >
           <div className="flex items-center justify-between border-b pb-3">
             <div>
@@ -1030,12 +1052,14 @@ export function PosManager() {
           </div>
         </section>
       </div>
+      )}
 
-      {/* Últimos tickets cobrados en el turno */}
-      <section className="bg-card rounded-2xl border shadow-sm">
+      {/* Historial de ventas del turno */}
+      {activeTab === "historial" && (
+      <section className="bg-card min-w-0 rounded-2xl border shadow-sm">
         <div className="flex items-center justify-between border-b px-5 py-4">
           <div>
-            <h2 className="text-base font-bold">Últimas ventas POS del turno</h2>
+            <h2 className="text-base font-bold">Historial de ventas POS</h2>
             <p className="text-muted-foreground text-xs">
               Podés reimprimir el ticket térmico de 80 mm o anular con devolución automática de
               stock.
@@ -1108,6 +1132,7 @@ export function PosManager() {
           </div>
         )}
       </section>
+      )}
 
       {/* Sheet de Vista Previa e Impresión de Ticket 80mm */}
       <Sheet

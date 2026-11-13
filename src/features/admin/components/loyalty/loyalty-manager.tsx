@@ -376,7 +376,7 @@ export function LoyaltyManager() {
         <div className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Niveles Bronce / Plata / Oro */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-extrabold">
@@ -443,7 +443,7 @@ export function LoyaltyManager() {
             </section>
 
             {/* Beneficio de Cumpleaños */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Cake className="text-primary size-5" />

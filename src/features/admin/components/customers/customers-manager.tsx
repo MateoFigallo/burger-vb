@@ -280,7 +280,7 @@ export function CustomersManager() {
             {/* Formulario de cobro o cargo en cuenta corriente */}
             <form
               onSubmit={handleCreditSubmit}
-              className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
+              className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5"
             >
               <div>
                 <h2 className="text-base font-extrabold">
@@ -390,7 +390,7 @@ export function CustomersManager() {
             </form>
 
             {/* Clientes con saldo deudor y recordatorio WhatsApp */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-7">
               <div>
                 <h2 className="text-base font-extrabold">
                   Saldos pendientes por cobrar ({customersWithDebt.length})

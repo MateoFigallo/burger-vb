@@ -295,7 +295,7 @@ function SystemManagerContent() {
           >
             <form
               onSubmit={handleSaveFiscal}
-              className="bg-background space-y-5 rounded-2xl border p-5 lg:col-span-7"
+              className="bg-background min-w-0 space-y-5 rounded-2xl border p-5 lg:col-span-7"
             >
               <div>
                 <h3 className="text-lg font-bold">Datos fiscales ARCA y reglas operativas</h3>
@@ -468,7 +468,7 @@ function SystemManagerContent() {
             </form>
 
             {/* Vista previa Ticket Térmico 80mm */}
-            <div className="lg:col-span-5">
+            <div className="min-w-0 lg:col-span-5">
               <div className="bg-background rounded-2xl border p-5">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-xs font-bold tracking-wider uppercase">
@@ -691,7 +691,7 @@ function SystemManagerContent() {
             transition={{ duration: 0.16, ease: "easeOut" }}
             className="grid gap-6 lg:grid-cols-12"
           >
-            <div className="bg-background space-y-5 rounded-2xl border p-5 lg:col-span-7">
+            <div className="bg-background min-w-0 space-y-5 rounded-2xl border p-5 lg:col-span-7">
               <div>
                 <h3 className="text-lg font-bold">
                   Respaldo integral y portabilidad de base local
@@ -772,7 +772,7 @@ function SystemManagerContent() {
               </div>
             </div>
 
-            <div className="bg-background space-y-4 rounded-2xl border p-5 lg:col-span-5">
+            <div className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-bold">Estado de almacenes locales</h4>

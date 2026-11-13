@@ -319,7 +319,7 @@ function WebMenuManagerContent() {
           >
             <form
               onSubmit={handleSavePortada}
-              className="bg-background space-y-5 rounded-2xl border p-5 lg:col-span-7"
+              className="bg-background min-w-0 space-y-5 rounded-2xl border p-5 lg:col-span-7"
             >
               <div>
                 <h3 className="text-lg font-bold">Identidad y textos de la tienda online</h3>
@@ -508,7 +508,7 @@ function WebMenuManagerContent() {
             </form>
 
             {/* Vista previa en vivo del Menú Digital */}
-            <div className="space-y-4 lg:col-span-5">
+            <div className="min-w-0 space-y-4 lg:col-span-5">
               <div className="bg-background overflow-hidden rounded-2xl border shadow-sm">
                 <div className="bg-muted/50 flex items-center justify-between border-b px-4 py-2.5">
                   <span className="text-xs font-bold tracking-wider uppercase">
@@ -592,7 +592,7 @@ function WebMenuManagerContent() {
             transition={{ duration: 0.16, ease: "easeOut" }}
             className="grid gap-6 lg:grid-cols-12"
           >
-            <div className="bg-background space-y-5 rounded-2xl border p-5 lg:col-span-7">
+            <div className="bg-background min-w-0 space-y-5 rounded-2xl border p-5 lg:col-span-7">
               <div>
                 <h3 className="text-lg font-bold">Generador de cartel QR para mesas y bolsas</h3>
                 <p className="text-muted-foreground text-xs">
@@ -683,7 +683,7 @@ function WebMenuManagerContent() {
               </div>
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="min-w-0 lg:col-span-5">
               <div className="bg-background flex flex-col items-center rounded-2xl border p-6 text-center shadow-sm">
                 <Badge className="mb-2 rounded-full">{web.storeName}</Badge>
                 <h4 className="text-lg font-extrabold tracking-tight uppercase">{qrTitle}</h4>
@@ -738,7 +738,7 @@ function WebMenuManagerContent() {
             <div className="grid gap-6 lg:grid-cols-12">
               <form
                 onSubmit={handleSaveLegal}
-                className="bg-background space-y-4 rounded-2xl border p-5 lg:col-span-7"
+                className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-7"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -814,7 +814,7 @@ function WebMenuManagerContent() {
               </form>
 
               {/* Bandeja de Botón de Arrepentimiento / Libro de quejas online */}
-              <div className="bg-background space-y-4 rounded-2xl border p-5 lg:col-span-5">
+              <div className="bg-background min-w-0 space-y-4 rounded-2xl border p-5 lg:col-span-5">
                 <div>
                   <span className="text-primary text-xs font-bold tracking-wider uppercase">
                     Resolución 424/2020 SCI

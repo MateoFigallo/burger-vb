@@ -406,7 +406,7 @@ export function SummaryDashboard() {
 
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Alertas operativas accionables */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-extrabold">Alertas operativas del local</h2>
@@ -503,7 +503,7 @@ export function SummaryDashboard() {
             </section>
 
             {/* Resumen rápido de productos estrella hoy */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-extrabold">Top hamburguesas por ingresos</h2>
@@ -611,7 +611,7 @@ export function SummaryDashboard() {
 
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Ranking detallado por producto */}
-            <section className="bg-card rounded-2xl border shadow-sm lg:col-span-7">
+            <section className="bg-card min-w-0 rounded-2xl border shadow-sm lg:col-span-7">
               <div className="border-b px-5 py-4">
                 <h3 className="text-base font-extrabold">
                   Rentabilidad por hamburguesa / producto
@@ -657,7 +657,7 @@ export function SummaryDashboard() {
             </section>
 
             {/* Medios de pago y Canales */}
-            <section className="bg-card space-y-5 rounded-2xl border p-5 shadow-sm lg:col-span-5">
+            <section className="bg-card min-w-0 space-y-5 rounded-2xl border p-5 shadow-sm lg:col-span-5">
               <div>
                 <h3 className="text-base font-extrabold">Cobros por medio de pago</h3>
                 <p className="text-muted-foreground text-xs">
@@ -747,7 +747,7 @@ export function SummaryDashboard() {
 
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Productos críticos */}
-            <section className="bg-card rounded-2xl border shadow-sm lg:col-span-7">
+            <section className="bg-card min-w-0 rounded-2xl border shadow-sm lg:col-span-7">
               <div className="flex items-center justify-between border-b px-5 py-4">
                 <div>
                   <h3 className="text-base font-extrabold">
@@ -811,7 +811,7 @@ export function SummaryDashboard() {
             </section>
 
             {/* Valorización por categoría */}
-            <section className="bg-card space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5">
+            <section className="bg-card min-w-0 space-y-4 rounded-2xl border p-5 shadow-sm lg:col-span-5">
               <div>
                 <h3 className="text-base font-extrabold">Capital inmovilizado por rubro</h3>
                 <p className="text-muted-foreground text-xs">

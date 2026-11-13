@@ -701,7 +701,7 @@ export function GoodsReceiptTab({
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <Select
               value={productToAddId}
               items={productSelectItems}
@@ -711,7 +711,7 @@ export function GoodsReceiptTab({
             >
               <SelectTrigger
                 aria-label="Producto para agregar al remito"
-                className="h-10 min-w-60 rounded-xl"
+                className="h-10 w-full min-w-0 rounded-xl sm:w-64"
               >
                 <SelectValue placeholder="Selecciona un producto" />
               </SelectTrigger>
@@ -727,7 +727,7 @@ export function GoodsReceiptTab({
               type="button"
               variant="secondary"
               onClick={handleAddLine}
-              className="h-10 gap-1.5 rounded-xl px-4 font-semibold"
+              className="h-10 shrink-0 gap-1.5 rounded-xl px-4 font-semibold"
             >
               <Plus className="size-4" />
               Agregar línea
